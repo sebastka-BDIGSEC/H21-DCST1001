@@ -12,9 +12,7 @@ IFS=','
 echo "$file_old_content" | while read ip timestamp; do
     if [ $now -le $(echo "$timestamp + 10*60" | bc) ]; then
         # Remove existing rules
-        uname | grep -qx 'BSD' \
-            && pfctl -t badhosts -T delete "$ip" \
-            || iptables -D INPUT -s "$ip" -j REJECT
+        iptables -D INPUT -s "$ip" -j REJECT
 
         # Remove from ban db
         echo "/$ip/d\nwq" | ed -s "$1" || true

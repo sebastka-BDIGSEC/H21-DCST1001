@@ -30,9 +30,7 @@ main() {
     ( while true; do ./unban.sh "$ban_db"; sleep 60; done ) &
 
     # Authlog is located at auth.log on most systems, except on Open- and NetBSD
-    uname | grep -qx -E 'OpenBSD|NetBSD' \
-        && readonly auth_log='/var/log/authlog' \
-        || readonly auth_log='/var/log/auth.log'
+    readonly auth_log='/var/log/auth.log'
 
     # Extract IPs from failed logins
     tail -f "$auth_log" \
