@@ -6,7 +6,6 @@ set -u      # Abort upon udefined variable
 #######################################
 #   Description:
 #       Ban IPs after three failed SSH login attempts
-#       Tested on Linux and OpenBSD
 #   Usage:
 #       ./miniban.sh
 #   Arguments:
@@ -25,12 +24,10 @@ main() {
     readonly log_file='/tmp/miniban_ip.log'
     readonly whitelist_db='miniban.whitelist'
     readonly ban_db='/tmp/miniban.db'
+    readonly auth_log='/var/log/auth.log'
 
     # Run unban in the background every minute
     ( while true; do ./unban.sh "$ban_db"; sleep 60; done ) &
-
-    # Authlog is located at auth.log on most systems, except on Open- and NetBSD
-    readonly auth_log='/var/log/auth.log'
 
     # Extract IPs from failed logins
     tail -f "$auth_log" \
