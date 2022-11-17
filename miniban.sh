@@ -36,11 +36,11 @@ main() {
         | grep --line-buffered -o -E 'rhost=.* |m .* p' \
         | sed -u 's/rhost=//;s/m\ //;s/\ p//' \
     | while read ip; do
-        # If address is whitelisted, do not ban
-        grep -qx "$ip" "$whitelist_db" && continue || true
-
         # Register failed login
         echo "$ip" >> $log_file
+
+        # If address is whitelisted, do not ban
+        grep -qx "$ip" "$whitelist_db" && continue || true
 
         # Ban ip if it has been registred three times already
         has_failed_three_times "$log_file" "$ip" \
