@@ -3,13 +3,16 @@ set -e      # Abort upon error
 set -u      # Abort upon udefined variable
 #set -x     # Print every command
 
-touch "$1"
+readonly ban_db="$1"
+readonly ip="$2"
+
+touch "$ban_db"
 
 # If ip is already banned, delete existing db entry
-grep -qx "$2" "$1" && echo "/$2/d\nwq" | ed -s "$1" || true
+grep -qx "$ip" "$ban_db" && echo "/$ip/d\nwq" | ed -s "$ban_db" || true
 
 # Ban
-iptables -I INPUT -s "$2" -j DROP
+iptables -I INPUT -s "$ip" -j DROP
 
 # Save ban in DB
-echo "$2,$(date +'%s')" >> "$1"
+echo "$ip,$(date +'%s')" >> "$ban_db"
